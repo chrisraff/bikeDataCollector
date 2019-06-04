@@ -6,6 +6,7 @@
 //#include <SPI.h> // needed for esp32, not for others
 #include <SD.h>
 #include <WiFiNINA.h>
+#include <ArduinoLowPower.h>
 #include "credentials.h"
 
 // sd variables
@@ -26,11 +27,11 @@ const int serialTimeout = 5000;
 void setup() {
   Serial.begin(9600);
 
-  Serial1.begin(115200); // set this back
+  Serial1.begin(9600);
 
   sdBegan = SD.begin(chipSelect);
 
-//  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 
 //  pinMode(13, INPUT);
 
@@ -51,6 +52,8 @@ void setup() {
       Serial << "SD card failed to initialize" << endl;
 
   lastSerialMillis = millis();
+
+  LowPower.attachInterruptWakeup(digitalPinToInterrupt(5), wakeMeUpInside, CHANGE);
 }
 
 void loop() {
@@ -124,8 +127,11 @@ void loop() {
     boolean connected = connect(ssid, pass, 10);
 
     if (!connected) {
-      Serial << "no connection" << endl;
+      Serial << "no connection, sleeping" << endl;
       // low power mode and try again later
+      LowPower.deepSleep(10000);
+      Serial << "woke up (will I see this?)" << endl;
+      return;
     }
     else
     {
@@ -190,6 +196,19 @@ void loop() {
 
     WiFi.end();
 
+    if (newData) {
+      // failed to upload, try again later
+      LowPower.sleep(10000);
+      Serial << "woke up (will I see this?)" << endl;
+      return;
+    }
+    else
+    {
+      Serial << "going to sleep forever bye" << endl;
+      LowPower.sleep(); // interrupt does not wake up from this sleep
+      Serial << "do I wake up here?" << endl;
+    }
+
 //    SD.remove("BikeData.txt");
   }
 
@@ -204,6 +223,12 @@ void loop() {
 ////    digitalWrite(LED_BUILTIN, LOW);
 //
 //  }
+}
+
+
+void wakeMeUpInside() {
+  Serial << "I woke up" << endl;
+  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
 
 
