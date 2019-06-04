@@ -53,7 +53,7 @@ void setup() {
 
   lastSerialMillis = millis();
 
-  LowPower.attachInterruptWakeup(digitalPinToInterrupt(5), wakeMeUpInside, CHANGE);
+  LowPower.attachInterruptWakeup(5, wakeMeUpInside, CHANGE); // digitalPinToInterrupt(5)?
 }
 
 void loop() {
