@@ -13,7 +13,29 @@ def is_int(c):
         int(c)
         return True
     except ValueError:
-        return False  # not a number
+        return False  # not an int
+
+
+def is_float(f):
+    """
+    Checks if a character is an float
+    :param char f: character to check
+    :rtype: boolean
+    """
+    try:
+        float(f)
+        return True
+    except ValueError:
+        return False  # not a float
+
+
+def bulk_is_float(*args):
+    if len(args) > 0:
+        for value in args:
+            if not is_float(value):
+                return False
+        return True
+    return False
 
 
 def format_line(data):
@@ -53,7 +75,7 @@ for line in raw_data:
 raw_data.close()
 clean_data.close()
 
-# create pandas DataFrame from
+# create pandas DataFrame from cleanDataFile
 df = pd.read_csv(cleanDataFile, sep="\t", header=0)
 
 # delete unnecessary columns (all values are constant)
@@ -62,3 +84,28 @@ df = df.drop(columns="humanWatts")
 df = df.drop(columns="nmRiderTorque")
 df = df.drop(columns="acceleration")
 df = df.drop(columns="flag1")
+
+# ############################################################################################################
+# print(df)
+# print(df.head())
+# ############################################################################################################
+
+
+# build data type validation to find and delete bad rows of data######################################################
+"""convert_dict = {"millis": int,
+                "ampHours": float,
+                "volts": float,
+                "amps": float,
+                "speed": float,
+                "distance": float,
+                "rpm": float,
+                "throttleIn": float,
+                "throttleOut": float,
+                "brakeFlag": str}
+
+for i in range(df.shape[0]):
+    
+
+
+df = df.astype(convert_dict)
+print(df.dtypes)"""
