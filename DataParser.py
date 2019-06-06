@@ -84,28 +84,3 @@ df = df.drop(columns="humanWatts")
 df = df.drop(columns="nmRiderTorque")
 df = df.drop(columns="acceleration")
 df = df.drop(columns="flag1")
-
-# ############################################################################################################
-# print(df)
-# print(df.head())
-# ############################################################################################################
-
-
-# build data type validation to find and delete bad rows of data######################################################
-"""convert_dict = {"millis": int,
-                "ampHours": float,
-                "volts": float,
-                "amps": float,
-                "speed": float,
-                "distance": float,
-                "rpm": float,
-                "throttleIn": float,
-                "throttleOut": float,
-                "brakeFlag": str}
-
-for i in range(df.shape[0]):
-    
-
-
-df = df.astype(convert_dict)
-print(df.dtypes)"""
