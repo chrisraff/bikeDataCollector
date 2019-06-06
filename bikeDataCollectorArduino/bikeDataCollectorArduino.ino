@@ -149,14 +149,33 @@ void loop() {
     }
     else
     {
-      // wifi connected, attempt to upload the file
+      // upload the file
       Serial << "uploading file" << endl;
       File dataFile = SD.open("BikeData.txt", FILE_READ);
 
       WiFiClient client;
       int clientStatus = client.connect("none.cs.umass.edu", 8099);
+      bool handshake = false;
 
-      if (dataFile && clientStatus == 1) {
+      // handshake with server
+      File handshakeFile = SD.open("ServerCr.txt", FILE_READ);
+      if (handshakeFile) {
+        String mine = handshakeFile.readStringUntil('\n');
+        client << mine;
+        String theirs = handshakeFile.readStringUntil('\n');
+        theirs.trim();
+        String actual = client.readStringUntil('\n');
+
+        if (actual == theirs) {
+          handshake = true;
+        }
+        else {
+          Serial << "handshake failed" << endl;
+        }
+      }
+
+
+      if (dataFile && clientStatus == 1 && handshake) {
         client << "Bike ID: " << bikeId << endl;
 
         // upload the file
