@@ -2,7 +2,6 @@
 #include <SD.h>
 #include <WiFiNINA.h>
 #include <ArduinoLowPower.h>
-#include "credentials.h"
 
 // sd variables
 const int chipSelect = 4;  // 4 for most things, 5 for esp32
@@ -13,7 +12,14 @@ bool firstRead = true;  // for discarding first serial values (most likely bad d
 bool newData = false;  // for determining whether an upload is needed
 unsigned long lastSerialMillis = 0;  // for recording time of last serial data input
 const int serialTimeout = 5000;  // milliseconds of no data before timeout
+// variables for uploading to server
+int bikeId = -1;
+char *ssid, *pass; // wifi credentials
+bool initializedWifiCredentials = false;
 
+// function headers
+void wakeMeUpInside();
+bool connect(char*, char*, int);
 
 void setup() {
   Serial.begin(9600);
@@ -26,12 +32,34 @@ void setup() {
   // write to SD card if SD card exists
   if (sdBegan) {
     Serial << "SD card initialized" << endl;
-    File dataFile = SD.open("BikeData.txt", FILE_WRITE);  
+
+    // log the arduino powering on
+    File dataFile = SD.open("BikeData.txt", FILE_WRITE);
     if (dataFile) {
       dataFile << "Arduino turned on" << endl;
       dataFile.close();
     }
-  } 
+
+    // get the wifi credentials and bike id
+    File configFile = SD.open("BikeConf.txt");
+    if (configFile) {
+      initializedWifiCredentials = true;
+
+      bikeId = configFile.parseInt();
+
+      configFile.readStringUntil('\n');
+
+      String ssid_s = configFile.readStringUntil('\n');
+      ssid = new char[ssid_s.length()]();
+      ssid_s.toCharArray(ssid, ssid_s.length());
+
+      String pass_s = configFile.readStringUntil('\n');
+      pass = new char[pass_s.length()]();
+      pass_s.toCharArray(pass, pass_s.length());
+
+      configFile.close();
+    }
+  }
   else Serial << "SD card failed to initialize" << endl;
   lastSerialMillis = millis();
   LowPower.attachInterruptWakeup(5, wakeMeUpInside, CHANGE); // digitalPinToInterrupt(5)?  // set attachInterruptWakeup pin
@@ -44,6 +72,9 @@ void loop() {
     newData = true;
     while (Serial.available()) {
       Serial << "Debug received " << Serial.readString() << endl;
+
+      Serial << "sd began: " << sdBegan << endl;
+      Serial << "bike id: " << bikeId << endl;
     }
   }
 
@@ -53,6 +84,17 @@ void loop() {
 
     if (firstRead) {  // discard first line of data
       Serial << "first read" << endl;
+      // log that the bike turned back on
+      if (sdBegan) {
+        File dataFile = SD.open("BikeData.txt", FILE_WRITE);
+        if (dataFile) {
+          dataFile << millis() << ": Bike turned on" << endl;
+          dataFile.close();
+
+          newData = true;
+        }
+      }
+
       Serial << Serial1.readStringUntil('\n') << endl;
       firstRead = false;
       return;
@@ -87,15 +129,15 @@ void loop() {
 
         newData = true;
       }
-      else 
+      else
         Serial << "Couldn't write to file" << endl;
     }
   }
 
   // if the bike stopped giving data (turns off), try to upload
   if (millis() - lastSerialMillis >= serialTimeout && newData) {
-    firstRead = true;  # reset firstRead
-    
+    firstRead = true;  // reset firstRead
+
     Serial << "Attempting to connect" << endl;
     boolean connected = connect(ssid, pass, 10);
     if (!connected) {
@@ -112,13 +154,13 @@ void loop() {
       File dataFile = SD.open("BikeData.txt", FILE_READ);
 
       WiFiClient client;
-      client.connect("none.cs.umass.edu", 8099);
+      int clientStatus = client.connect("none.cs.umass.edu", 8099);
 
-      // what if the server was down?
+      if (dataFile && clientStatus == 1) {
+        client << "Bike ID: " << bikeId << endl;
 
-      if (dataFile) {
         // upload the file
-        char data[1024];  // make 1 MB packet to send
+        char data[1024];  // make 1 KB packet to send
 
         boolean fileHasEnded = false;
 
@@ -146,11 +188,12 @@ void loop() {
         if (client.available()) {
           String ack = client.readString();
           Serial << "got: " << ack << endl;
-          
+
           if (ack.equals("great")) {
             Serial << "great, acknowledged" << endl;
             // the file successfully uploaded
             newData = false;
+            SD.remove("BikeData.txt");
           }
         }
         client.stop();
@@ -162,13 +205,15 @@ void loop() {
 
     if (newData) {
       // failed to upload, try again later
+      Serial << "Failed to upload, sleeping for a bit" << endl;
       LowPower.sleep(10000);
       Serial << "woke up (will I see this?)" << endl;
       return;
     }
     else {
       Serial << "going to sleep forever bye" << endl;
-      LowPower.sleep();  // interrupt does not wake up from this sleep
+      Serial << "but not actually because wakeup interrupts don't work" << endl;
+      // LowPower.sleep();  // interrupt does not wake up from this sleep
       Serial << "do I wake up here?" << endl;
     }
   }
