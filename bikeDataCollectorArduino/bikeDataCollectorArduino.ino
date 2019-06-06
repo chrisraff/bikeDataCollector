@@ -7,19 +7,24 @@
 const int chipSelect = 4;  // 4 for most things, 5 for esp32
 bool sdBegan = false;
 
-// initialize other variables
+// variables for reading from serial
 bool firstRead = true;  // for discarding first serial values (most likely bad data)
-bool newData = false;  // for determining whether an upload is needed
 unsigned long lastSerialMillis = 0;  // for recording time of last serial data input
-const int serialTimeout = 5000;  // milliseconds of no data before timeout
+const int serialTimeout = 5000;  // milliseconds of no data before timeout (bike is considered off)
+
 // variables for uploading to server
 int bikeId = -1;
 char *ssid, *pass; // wifi credentials
 bool initializedWifiCredentials = false;
+bool newData = false;  // for determining whether an upload is needed
+const int uploadReattemptMillis = 60 * 1000; // time to wait before uploading again
+unsigned long lastUploadAttemptMillis = 0;
 
 // function headers
 void wakeMeUpInside();
 bool connect(char*, char*, int);
+
+unsigned long lastLightMillis = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -62,10 +67,18 @@ void setup() {
   }
   else Serial << "SD card failed to initialize" << endl;
   lastSerialMillis = millis();
-  LowPower.attachInterruptWakeup(5, wakeMeUpInside, CHANGE); // digitalPinToInterrupt(5)?  // set attachInterruptWakeup pin
+  LowPower.attachInterruptWakeup(7, wakeMeUpInside, CHANGE); // set attachInterruptWakeup pin
+
+  // go to sleep until the bike turns on
+  LowPower.sleep();
 }
 
 void loop() {
+  if (millis() - lastLightMillis > 500) {
+    lastLightMillis = millis();
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  }
+
   // debug - allow upload to be triggered from serial moniter
   if (Serial.available()) {
     lastSerialMillis = millis();
@@ -134,17 +147,21 @@ void loop() {
     }
   }
 
-  // if the bike stopped giving data (turns off), try to upload
-  if (millis() - lastSerialMillis >= serialTimeout && newData) {
-    firstRead = true;  // reset firstRead
+  // if the bike stopped giving data (turned off), try to upload
+  bool dataStoppedFlowing = millis() - lastSerialMillis >= serialTimeout;
+  bool allowedToAttempt = millis() - lastUploadAttemptMillis >= uploadReattemptMillis;
+  if (dataStoppedFlowing && allowedToAttempt && newData) {
+    firstRead = true;  // reset firstRead for serial input
 
     Serial << "Attempting to connect" << endl;
     boolean connected = connect(ssid, pass, 10);
     if (!connected) {
       Serial << "no connection, sleeping" << endl;
-      // low power mode and try again later
-      LowPower.deepSleep(10000);
-      Serial << "woke up (will I see this?)" << endl;
+      // go into low power mode and try again later
+      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+      lastUploadAttemptMillis = millis();
+      WiFi.end();
+      LowPower.sleep(uploadReattemptMillis);
       return;
     }
     else
@@ -173,7 +190,6 @@ void loop() {
           Serial << "handshake failed" << endl;
         }
       }
-
 
       if (dataFile && clientStatus == 1 && handshake) {
         client << "Bike ID: " << bikeId << endl;
@@ -225,23 +241,20 @@ void loop() {
     if (newData) {
       // failed to upload, try again later
       Serial << "Failed to upload, sleeping for a bit" << endl;
-      LowPower.sleep(10000);
-      Serial << "woke up (will I see this?)" << endl;
+      lastUploadAttemptMillis = millis();
+      LowPower.sleep(uploadReattemptMillis);
       return;
     }
     else {
-      Serial << "going to sleep forever bye" << endl;
-      Serial << "but not actually because wakeup interrupts don't work" << endl;
-      // LowPower.sleep();  // interrupt does not wake up from this sleep
-      Serial << "do I wake up here?" << endl;
+      Serial << "going to sleep, serial will stop working" << endl;
+      LowPower.sleep();
     }
   }
 }
 
 
 void wakeMeUpInside() {
-  Serial << "I woke up" << endl;
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  // Intentionally empty
 }
 
 
