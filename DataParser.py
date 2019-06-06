@@ -29,12 +29,15 @@ def format_line(data):
     return ""
 
 
-# file names
-rawInputFile = "output_1559680727.33.txt"
-cleanOutputFile = "clean_%s" % rawInputFile
+# ####change this to parse new file#### #
+rawInputFile = "output_1559836694.47.txt"
 
-# open files, force read/write with ascii encoding
+# set file names, open files, force read/write with ascii encoding
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
+label, ID = rawData.readline().split(sep=": ")  # extract bike ID
+if is_int(ID):
+    ID = int(ID)
+cleanOutputFile = "bike%s_%s" % (ID, rawInputFile)
 cleanData = open(cleanOutputFile, "w", encoding="ascii")
 
 # create headers in cleanData
