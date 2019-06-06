@@ -1,4 +1,3 @@
-import matplotlib as plt
 import pandas as pd
 import os
 
@@ -16,28 +15,6 @@ def is_int(c):
         return False  # not an int
 
 
-def is_float(f):
-    """
-    Checks if a character is an float
-    :param char f: character to check
-    :rtype: boolean
-    """
-    try:
-        float(f)
-        return True
-    except ValueError:
-        return False  # not a float
-
-
-def bulk_is_float(*args):
-    if len(args) > 0:
-        for value in args:
-            if not is_float(value):
-                return False
-        return True
-    return False
-
-
 def format_line(data):
     """
     Ignores bad data, formats good data to be tab-separated
@@ -53,30 +30,30 @@ def format_line(data):
 
 
 # file names
-rawDataFile = "output_1559680727.33.txt"
-cleanDataFile = "clean_output_1559680727.33.txt"
+rawInputFile = "output_1559680727.33.txt"
+cleanOutputFile = "clean_%s" % rawInputFile
 
-# open files, force ascii encoding
-raw_data = open(rawDataFile, "r", encoding="ascii", errors='ignore')
-clean_data = open(cleanDataFile, "w", encoding="ascii")
+# open files, force read/write with ascii encoding
+rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
+cleanData = open(cleanOutputFile, "w", encoding="ascii")
 
-# create headers in clean_data
+# create headers in cleanData
 headers = "millis ampHours volts amps speed distance degreesC rpm humanWatts nmRiderTorque throttleIn throttleOut " \
           "acceleration flag1 brakeFlag"
 for item in headers.split():
-    clean_data.write("%s\t" % item)
-clean_data.seek(clean_data.tell() - 1, os.SEEK_SET)
-clean_data.write("\n")
+    cleanData.write("%s\t" % item)
+cleanData.seek(cleanData.tell() - 1, os.SEEK_SET)  # move cursor one character back
+cleanData.write("\n")  # move to new line
 
-# write formatted row from raw_data to clean_data
-for line in raw_data:
-    clean_data.write(format_line(line))
+# write formatted row from rawData to cleanData
+for line in rawData:
+    cleanData.write(format_line(line))
 
-raw_data.close()
-clean_data.close()
+rawData.close()
+cleanData.close()
 
-# create pandas DataFrame from cleanDataFile
-df = pd.read_csv(cleanDataFile, sep="\t", header=0)
+# create pandas DataFrame from cleanOutputFile
+df = pd.read_csv(cleanOutputFile, sep="\t", header=0)
 
 # delete unnecessary columns (all values are constant)
 df = df.drop(columns="degreesC")
