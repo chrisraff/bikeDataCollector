@@ -30,17 +30,25 @@ def format_line(data):
 
 
 # ####change this to parse new file#### #
-rawInputFile = "output_1559836694.47.txt"
+rawInputFile = "output_1559843320.39.txt"
 
 # set file names, open files, force read/write with ascii encoding
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
-label, ID = rawData.readline().split(sep=": ")  # extract bike ID
-if is_int(ID):
-    ID = int(ID)
-cleanOutputFile = "bike%s_%s" % (ID, rawInputFile)
+
+# extract bike ID
+ID = ""
+for line in rawData:
+    if line[0:9] == "Bike ID: ":
+        label, ID = line.split(sep=": ")
+        if is_int(ID):
+            ID = int(ID)
+        break
+
+# create output file cleanData
+cleanOutputFile = "bike_%s_%s" % (ID, rawInputFile)
 cleanData = open(cleanOutputFile, "w", encoding="ascii")
 
-# create headers in cleanData
+# write headers in cleanData
 headers = "millis ampHours volts amps speed distance degreesC rpm humanWatts nmRiderTorque throttleIn throttleOut " \
           "acceleration flag1 brakeFlag"
 for item in headers.split():
@@ -48,7 +56,7 @@ for item in headers.split():
 cleanData.seek(cleanData.tell() - 1, os.SEEK_SET)  # move cursor one character back
 cleanData.write("\n")  # move to new line
 
-# write formatted row from rawData to cleanData
+# write formatted row of rawData to cleanData
 for line in rawData:
     cleanData.write(format_line(line))
 
