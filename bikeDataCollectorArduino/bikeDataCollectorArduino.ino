@@ -17,7 +17,7 @@ int bikeId = -1;
 char *ssid, *pass; // wifi credentials
 bool initializedWifiCredentials = false;
 bool newData = false;  // for determining whether an upload is needed
-const int uploadReattemptMillis = 60 * 1000; // time to wait before uploading again
+const int uploadReattemptMillis = 20 * 60 * 1000; // time to wait before uploading again
 unsigned long lastUploadAttemptMillis = 0;
 
 // function headers
