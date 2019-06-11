@@ -13,7 +13,7 @@ unsigned long lastSerialMillis = 0;  // for recording time of last serial data i
 const int serialTimeout = 5000;  // milliseconds of no data before timeout (bike is considered off)
 
 // variables for uploading to server
-int bikeId = -1;
+int bikeId = -1; // this default value is replaced with the value loaded from the SD card
 char *ssid, *pass; // wifi credentials
 bool initializedWifiCredentials = false;
 bool newData = false;  // for determining whether an upload is needed
