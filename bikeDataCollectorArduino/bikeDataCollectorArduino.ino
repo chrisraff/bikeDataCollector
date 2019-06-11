@@ -160,6 +160,7 @@ void loop() {
       // go into low power mode and try again later
       digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
       lastUploadAttemptMillis = millis();
+      client.stop();
       WiFi.end();
       LowPower.sleep(uploadReattemptMillis);
       return;
@@ -188,6 +189,7 @@ void loop() {
         }
         else {
           Serial << "handshake failed" << endl;
+          client.stop();
         }
       }
 
