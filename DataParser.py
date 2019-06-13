@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+import numpy as np
+import math
 
 
 def is_int(c):
@@ -29,8 +31,14 @@ def format_line(data):
     return ""
 
 
+def round(n):
+    if n - math.floor(n) < 0.5:
+        return math.floor(n)
+    return math.ceil(n)
+
+
 # ####change this to parse new file#### #
-rawInputFile = "output_1559843320.39.txt"
+rawInputFile = "output_1560181038.22.txt"
 
 # set file names, open files, force read/write with ascii encoding
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
@@ -72,3 +80,26 @@ df = df.drop(columns="humanWatts")
 df = df.drop(columns="nmRiderTorque")
 df = df.drop(columns="acceleration")
 df = df.drop(columns="flag1")
+df = df.drop(columns="ampHours")
+df = df.drop(columns="volts")
+df = df.drop(columns="amps")
+# remaining columns:
+# millis ampHours volts amps speed distance rpm throttleIn throttleOut brakeFlag
+
+new_data_indexes = []
+length = len(df)
+millis = np.empty(length)
+millis[0] = 0
+for i in range(length-1):
+    millis[i+1] = round((df.iloc[i+1, 0] - df.iloc[i, 0]) / 1000)
+    if millis[i+1] > 10 or millis[i+1] < 0:
+        new_data_indexes.append(i+1)
+
+sessions = []
+if len(new_data_indexes) > 0:
+    new_data_indexes.insert(0, 0)
+    new_data_indexes.append(len(df))
+    for i in range(len(new_data_indexes) - 1):
+        sessions.append(df[new_data_indexes[i]:new_data_indexes[i+1]])
+
+print("There are %s recorded sessions" % len(sessions))
