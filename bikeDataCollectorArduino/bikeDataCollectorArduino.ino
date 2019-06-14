@@ -35,7 +35,7 @@ void setup() {
   Serial1.begin(9600);
 
   softSerial.begin(9600);
-  pinPeripherla(0, PIO_SERCOM); // RX
+  pinPeripheral(0, PIO_SERCOM); // RX
   pinPeripheral(1, PIO_SERCOM); // TX
 
   sdBegan = SD.begin(chipSelect);  // determine the presence of SD card
@@ -134,6 +134,7 @@ void loop() {
     float throttleOut = Serial1.parseFloat();
     float acceleration = Serial1.parseFloat();
     String flags = Serial1.readStringUntil('\n');
+    flags.trim();
 
 
     // write to SD card
