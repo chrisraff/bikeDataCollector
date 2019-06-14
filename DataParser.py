@@ -26,7 +26,7 @@ def format_line(data):
     if data is not None:  # check if line is not empty
         if is_int(data[0]):  # check if first character is a number
             data = data.replace(":", "").replace("\t", " ").replace(",", "").replace("  ", " ").replace(" ", "\t")
-            if data.count("\t") is 14:  # check if number of columns is 15
+            if data.count("\t") is 16:  # check if number of columns is 17
                 return data
     return ""
 
@@ -58,7 +58,7 @@ cleanData = open(cleanOutputFile, "w", encoding="ascii")
 
 # write headers in cleanData
 headers = "millis ampHours volts amps speed distance degreesC rpm humanWatts nmRiderTorque throttleIn throttleOut " \
-          "acceleration flag1 brakeFlag"
+          "acceleration flag1 brakeFlag assist light"
 for item in headers.split():
     cleanData.write("%s\t" % item)
 cleanData.seek(cleanData.tell() - 1, os.SEEK_SET)  # move cursor one character back
