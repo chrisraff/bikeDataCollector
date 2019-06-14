@@ -2,6 +2,7 @@
 #include <SD.h>
 #include <WiFiNINA.h>
 #include <ArduinoLowPower.h>
+#include "wiring_private.h"
 
 // sd variables
 const int chipSelect = 4;  // 4 for most things, 5 for esp32
@@ -11,6 +12,9 @@ bool sdBegan = false;
 bool firstRead = true;  // for discarding first serial values (most likely bad data)
 unsigned long lastSerialMillis = 0;  // for recording time of last serial data input
 const int serialTimeout = 5000;  // milliseconds of no data before timeout (bike is considered off)
+int lastAssistLevel = -1;
+bool lightStatus = false;
+Uart softSerial (&sercom3, 0, 1, SERCOM_RX_PAD_1, UART_TX_PAD_0);
 
 // variables for uploading to server
 int bikeId = -1; // this default value is replaced with the value loaded from the SD card
@@ -29,6 +33,10 @@ unsigned long lastLightMillis = 0;
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
+
+  softSerial.begin(9600);
+  pinPeripherla(0, PIO_SERCOM); // RX
+  pinPeripheral(1, PIO_SERCOM); // TX
 
   sdBegan = SD.begin(chipSelect);  // determine the presence of SD card
 
@@ -136,7 +144,7 @@ void loop() {
                  << amps << ", " << speed << ", " << distance << ", " << degreesC << ", "
                  << rpm << ", " << humanWatts << ", " << nmRiderTorque << ", "
                  << throttleIn << ", " << throttleOut << ", " << acceleration << ", "
-                 << flags << endl;
+                 << flags << ", " << lastAssistLevel << ", " << lightStatus << endl;
 
         dataFile.close();
 
@@ -145,6 +153,22 @@ void loop() {
       else
         Serial << "Couldn't write to file" << endl;
     }
+  }
+
+  // get assist level
+  if (softSerial.available()) {
+    softSerial.read(); // :
+    softSerial.read(); // 26
+    softSerial.read(); // F
+    softSerial.read(); // 2
+    lastAssistLevel = softSerial.read();
+
+    if (lastAssistLevel > 128) {
+      lastAssistLevel -= 128;
+      lightStatus = true;
+    }
+
+    softSerial.readStringUntil('\n'); // clear the rest of the buffer
   }
 
   // if the bike stopped giving data (turned off), try to upload
@@ -256,6 +280,11 @@ void loop() {
 
 void wakeMeUpInside() {
   // Intentionally empty
+}
+
+
+void SERCOM3_Handler() {
+  softSerial.IrqHandler();
 }
 
 
