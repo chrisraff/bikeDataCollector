@@ -107,6 +107,8 @@ void loop() {
       Serial << "first read" << endl;
       // log that the bike turned back on
       if (sdBegan) {
+        noInterrupts();
+
         File dataFile = SD.open("BikeData.txt", FILE_WRITE);
         if (dataFile) {
           dataFile << millis() << ": Bike turned on" << endl;
@@ -114,6 +116,7 @@ void loop() {
 
           newData = true;
         }
+        interrupts();
       }
 
       Serial << Serial1.readStringUntil('\n') << endl;
@@ -139,6 +142,8 @@ void loop() {
 
     // write to SD card
     if (sdBegan) {
+      noInterrupts();
+
       File dataFile = SD.open("BikeData.txt", FILE_WRITE);
       if (dataFile) {
         dataFile << millis() << ": " << ampHours << ", " << volts << ", "
@@ -154,9 +159,14 @@ void loop() {
       else
         Serial << "Couldn't write to file" << endl;
     }
+
+    interrupts();
   }
 
   // get assist level
+  unsigned long assistReadTimeout = millis() + 500;
+  while (!softSerial.available() && millis() < assistReadTimeout) {}
+
   if (softSerial.available()) {
     softSerial.read(); // :
     softSerial.read(); // 26
