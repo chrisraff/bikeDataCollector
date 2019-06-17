@@ -1,6 +1,7 @@
 import pandas as pd
-import os
 import numpy as np
+import matplotlib.pyplot as plt
+import os
 import math
 
 
@@ -26,19 +27,20 @@ def format_line(data):
     if data is not None:  # check if line is not empty
         if is_int(data[0]):  # check if first character is a number
             data = data.replace(":", "").replace("\t", " ").replace(",", "").replace("  ", " ").replace(" ", "\t")
-            if data.count("\t") is 16:  # check if number of columns is 17
+            # if data.count("\t") is 16:  # check if number of columns is 17
+            if data.count("\t") is 14:  # check if number of columns if 15
                 return data
     return ""
 
 
-def round(n):
+def real_round(n):
     if n - math.floor(n) < 0.5:
         return math.floor(n)
     return math.ceil(n)
 
 
 # ####change this to parse new file#### #
-rawInputFile = "output_1560181038.22.txt"
+rawInputFile = "one_session_test.txt"
 
 # set file names, open files, force read/write with ascii encoding
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
@@ -84,22 +86,29 @@ df = df.drop(columns="ampHours")
 df = df.drop(columns="volts")
 df = df.drop(columns="amps")
 # remaining columns:
-# millis ampHours volts amps speed distance rpm throttleIn throttleOut brakeFlag
+# millis ampHours volts amps speed distance rpm throttleIn throttleOut brakeFlag assist light
 
-new_data_indexes = []
+new_data_indexes = []  # initialize list of new session indexes
 length = len(df)
-millis = np.empty(length)
-millis[0] = 0
+seconds_between = np.empty(length)
+seconds_between[0] = 0
 for i in range(length-1):
-    millis[i+1] = round((df.iloc[i+1, 0] - df.iloc[i, 0]) / 1000)
-    if millis[i+1] > 10 or millis[i+1] < 0:
+    seconds_between[i + 1] = real_round((df.iloc[i + 1, 0] - df.iloc[i, 0]) / 1000)  # find difference between millis
+    if seconds_between[i + 1] > 10 or seconds_between[i + 1] < 0:
         new_data_indexes.append(i+1)
 
-sessions = []
-if len(new_data_indexes) > 0:
-    new_data_indexes.insert(0, 0)
-    new_data_indexes.append(len(df))
-    for i in range(len(new_data_indexes) - 1):
-        sessions.append(df[new_data_indexes[i]:new_data_indexes[i+1]])
+sessions = []  # initialize list of session DataFrames
+new_data_indexes.insert(0, 0)
+new_data_indexes.append(length)
+for i in range(len(new_data_indexes) - 1):
+    sessions.append(df[new_data_indexes[i]:new_data_indexes[i+1]])  # split df into sessions
 
-print("There are %s recorded sessions" % len(sessions))
+# use this to check number of sessions
+"""if len(sessions) == 1:
+    print("There is 1 recorded session")
+else:
+    print("There are %s recorded sessions" % (len(sessions)))"""
+
+# TODO: create plots for each session
+"""for i in range(len(sessions)):  # create graphs for each session
+    sessions[i].plot()"""
