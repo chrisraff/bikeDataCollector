@@ -92,26 +92,31 @@ for i in list(df):  # iterate over every column
 for i in ["ampHours", "volts", "amps", "throttleIn", "throttleOut"]:
     df = df.drop(columns=i)
 
+
 # adjust data for graphing purposes
 df = df.replace(to_replace={"rpm": {0: np.nan}})  # replace 0 in rpm with NaN for graphing purposes
 df = df.replace(to_replace={"brake": {"r": np.nan}})  # replace r in brake with NaN for graphing purposes
 df = df.replace(to_replace={"brake": {"rB": 45}})  # replace rB in brake with 1 for graphing purposes
 
-print(df)
-
 # determine indices of new sessions
 new_data_indices = []  # initialize list of new session indices
 length = len(df)
-seconds_between = np.empty(length)
+seconds_between = np.empty(length)  # initialize list of seconds between rows
 seconds_between[0] = 0
-time_since_start = np.empty(length)
+time_since_start = np.empty(length)  # initialize list of seconds since starting session
 time_since_start[0] = 0
+session_distance = np.empty(length)  # initialize list of distance travelled in session
+session_distance[0] = 0.0
+distance_offset = df.at[0, "distance"]
 for i in range(length - 1):
     seconds_between[i + 1] = int(real_round((df.iloc[i + 1, 0] - df.iloc[i, 0]) / 1000))  # find time difference
     time_since_start[i + 1] = int(seconds_between[i + 1] + time_since_start[i])
+    session_distance[i + 1] = df.at[i+1, "distance"] - distance_offset
     if seconds_between[i + 1] > 10 or seconds_between[i + 1] < 0:
         new_data_indices.append(i + 1)
         time_since_start[i + 1] = 0
+        session_distance[i + 1] = 0
+        distance_offset = df.at[i+1, "distance"]
 
 sessions = []  # initialize list of session DataFrames
 new_data_indices.insert(0, 0)
@@ -120,18 +125,20 @@ for i in range(len(new_data_indices) - 1):
     start, end = new_data_indices[i], new_data_indices[i + 1]
     sessions.append(df[start:end])  # split df into sessions
     sessions[i]["timeSinceStart"] = time_since_start[start:end]
+    sessions[i]["sessionDistance"] = session_distance[start:end]
 
-# use this to check sessions
+"""# debug: use this to check sessions
 if len(sessions) == 1:
     print("There is 1 recorded session")
     # print(sessions[0])
 else:
     print("There are %s recorded sessions" % (len(sessions)))
     # print(sessions[0])
+"""
 
-# TODO: create plots for each session
+# TODO: create better plots for each session
 for i in range(len(sessions)):  # create graphs for each session
-    sessions[i].plot(x="timeSinceStart", y=["speed", "rpm", "brake"], kind="line", grid=True)
+    sessions[i].plot(x="timeSinceStart", y=["speed", "rpm", "brake", "sessionDistance"], kind="line", grid=True)
     plt.xlabel("Seconds after Start of Session")
     plt.title("Session %s/%s" % (i+1, len(sessions)))
     plt.xlim(left=0)
