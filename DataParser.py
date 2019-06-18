@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import os
 import math
 
+pd.options.mode.chained_assignment = None
+
 
 def is_int(c):
     """
@@ -40,7 +42,7 @@ def real_round(n):
 
 
 # ####change this to parse new file#### #
-rawInputFile = "one_session_test.txt"
+rawInputFile = "output_1560311576.64.txt"
 
 # set file names, open files, force read/write with ascii encoding
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
@@ -92,23 +94,32 @@ new_data_indexes = []  # initialize list of new session indexes
 length = len(df)
 seconds_between = np.empty(length)
 seconds_between[0] = 0
+time_since_start = np.empty(length)
+time_since_start[0] = 0
 for i in range(length-1):
-    seconds_between[i + 1] = real_round((df.iloc[i + 1, 0] - df.iloc[i, 0]) / 1000)  # find difference between millis
+    seconds_between[i + 1] = int(real_round((df.iloc[i + 1, 0] - df.iloc[i, 0]) / 1000))  # find time difference
+    time_since_start[i + 1] = int(seconds_between[i + 1] + time_since_start[i])
     if seconds_between[i + 1] > 10 or seconds_between[i + 1] < 0:
         new_data_indexes.append(i+1)
+        time_since_start[i + 1] = 0
 
 sessions = []  # initialize list of session DataFrames
 new_data_indexes.insert(0, 0)
 new_data_indexes.append(length)
 for i in range(len(new_data_indexes) - 1):
     sessions.append(df[new_data_indexes[i]:new_data_indexes[i+1]])  # split df into sessions
+    sessions[i]["time since start"] = time_since_start[new_data_indexes[i]:new_data_indexes[i+1]]
 
-# use this to check number of sessions
+# use this to check sessions
 """if len(sessions) == 1:
     print("There is 1 recorded session")
+    print(sessions[0])
 else:
-    print("There are %s recorded sessions" % (len(sessions)))"""
+    print("There are %s recorded sessions" % (len(sessions)))
+    print(sessions[0])"""
 
 # TODO: create plots for each session
-"""for i in range(len(sessions)):  # create graphs for each session
-    sessions[i].plot()"""
+for i in range(len(sessions)):  # create graphs for each session
+    sessions[i].plot(x="time since start", y="speed", kind="scatter")
+    sessions[i].plot(x="time since start", y="rpm", kind="scatter")
+plt.show()
