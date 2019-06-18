@@ -132,6 +132,8 @@ else:
 # TODO: create plots for each session
 for i in range(len(sessions)):  # create graphs for each session
     sessions[i].plot(x="timeSinceStart", y=["speed", "rpm", "brake"], kind="line", grid=True)
+    plt.xlabel("Seconds after Start of Session")
+    plt.title("Session %s/%s" % (i+1, len(sessions)))
     plt.xlim(left=0)
     plt.ylim(bottom=0)
 plt.show()
