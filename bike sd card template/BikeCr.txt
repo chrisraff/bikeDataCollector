@@ -1,0 +1,4 @@
+-1
+ssid
+password
+A newline is required after the password. The first row (-1) is the bike id, this should be unique for each bike. -1 is the default
