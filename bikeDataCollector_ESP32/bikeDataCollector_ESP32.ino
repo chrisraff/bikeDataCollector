@@ -33,7 +33,7 @@ unsigned long lastLightMillis = 0;
 
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial1.begin(9600, SERIAL_8N1, RXD1, TXD1);
 
   delay(1000);
@@ -91,24 +91,12 @@ void loop() {
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
   }
 
-  // debug - allow upload to be triggered from serial moniter
-  if (Serial.available()) {
-    lastSerialMillis = millis();
-    newData = true;
-    while (Serial.available()) {
-      Serial << "Debug received " << Serial.readString() << endl;
-
-      Serial << "sd began: " << sdBegan << endl;
-      Serial << "bike id: " << bikeId << endl;
-    }
-  }
-
   // handle input
-  if (Serial1.available()) {
+  if (Serial.available()) {
     lastSerialMillis = millis();
 
     if (firstRead) {  // discard first line of data
-      Serial << "first read" << endl;
+      Serial << "first read: " << endl;
       // log that the bike turned back on
       if (sdBegan) {
         File dataFile = SD.open("/BikeData.txt", FILE_APPEND);
@@ -120,24 +108,24 @@ void loop() {
         }
       }
 
-      Serial << Serial1.readStringUntil('\n') << endl;
+      Serial << Serial.readStringUntil('\n') << endl;
       firstRead = false;
       return;
     }
 
-    float ampHours = Serial1.parseFloat();
-    float volts = Serial1.parseFloat();
-    float amps = Serial1.parseFloat();
-    float speed = Serial1.parseFloat();
-    float distance = Serial1.parseFloat();
-    float degreesC = Serial1.parseFloat();
-    float rpm = Serial1.parseFloat();
-    int humanWatts = Serial1.parseInt(); // doesn't appear to be a float?
-    float nmRiderTorque = Serial1.parseFloat();
-    float throttleIn = Serial1.parseFloat();
-    float throttleOut = Serial1.parseFloat();
-    float acceleration = Serial1.parseFloat();
-    String flags = Serial1.readStringUntil('\n');
+    float ampHours = Serial.parseFloat();
+    float volts = Serial.parseFloat();
+    float amps = Serial.parseFloat();
+    float speed = Serial.parseFloat();
+    float distance = Serial.parseFloat();
+    float degreesC = Serial.parseFloat();
+    float rpm = Serial.parseFloat();
+    int humanWatts = Serial.parseInt(); // doesn't appear to be a float?
+    float nmRiderTorque = Serial.parseFloat();
+    float throttleIn = Serial.parseFloat();
+    float throttleOut = Serial.parseFloat();
+    float acceleration = Serial.parseFloat();
+    String flags = Serial.readStringUntil('\n');
     flags.trim();
 
 
@@ -161,24 +149,21 @@ void loop() {
     }
   }
 
-  // get assist level
-//   unsigned long assistReadTimeout = millis() + 500;
-//   while (!softSerial.available() && millis() < assistReadTimeout) {}
+  if (Serial1.available()) {
+    Serial1.read(); // :
+    Serial1.read(); // 26
+    Serial1.read(); // F
+    Serial1.read(); // 2
+    lastAssistLevel = Serial1.read();
 
-//   if (softSerial.available()) {
-//     softSerial.read(); // :
-//     softSerial.read(); // 26
-//     softSerial.read(); // F
-//     softSerial.read(); // 2
-//     lastAssistLevel = softSerial.read();
+    lightStatus = lastAssistLevel >= 128;
 
-//     if (lastAssistLevel > 128) {
-//       lastAssistLevel -= 128;
-//       lightStatus = true;
-//     }
+    if (lastAssistLevel >= 128) {
+      lastAssistLevel -= 128;
+    }
 
-//     softSerial.readStringUntil('\n'); // clear the rest of the buffer
-//   }
+    Serial1.readStringUntil('\n'); // clear the rest of the buffer
+  }
 
   // if the bike stopped giving data (turned off), try to upload
   bool dataStoppedFlowing = millis() - lastSerialMillis >= serialTimeout;
