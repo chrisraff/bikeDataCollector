@@ -1,5 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:Merax Wiring 2-cache
+LIBS:Merax Wiring-cache
 EELAYER 29 0
 EELAYER END
 $Descr USLetter 11000 8500
@@ -25,12 +25,6 @@ F 3 "~" H 9650 2350 50  0001 C CNN
 	1    9650 2350
 	0    -1   1    0   
 $EndComp
-Text Notes 9450 2300 1    50   ~ 0
-red
-Text Notes 10250 2300 1    50   ~ 0
-yellow
-Text Notes 9850 2300 1    50   ~ 0
-white
 $Comp
 L Merax_EBike_Parts:Ebrake_Cutoff J?
 U 1 1 5D12BC62
@@ -42,10 +36,6 @@ F 3 "~" H 7850 2350 50  0001 C CNN
 	1    7850 2350
 	0    -1   1    0   
 $EndComp
-Text Notes 7650 2300 1    50   ~ 0
-red
-Text Notes 8150 2300 1    50   ~ 0
-blue
 $Comp
 L Merax_EBike_Parts:Torque_PAS J?
 U 1 1 5D130595
@@ -57,12 +47,6 @@ F 3 "~" H 9050 2350 50  0001 C CNN
 	1    9050 2350
 	0    -1   1    0   
 $EndComp
-Text Notes 8750 2300 1    50   ~ 0
-white
-Text Notes 9350 2300 1    50   ~ 0
-green
-Text Notes 9950 2300 1    50   ~ 0
-black
 $Comp
 L Merax_EBike_Parts:Thermistor J?
 U 1 1 5D14F7DB
@@ -140,9 +124,9 @@ F 3 "~" H 1950 2550 50  0001 C CNN
 	1    1950 2550
 	0    -1   -1   0   
 $EndComp
-Text Notes 6750 6550 0    50   ~ 0
+Text Notes 7650 6550 0    50   ~ 0
 assist serial
-Text Notes 6750 4100 0    50   ~ 0
+Text Notes 7650 4100 0    50   ~ 0
 cycle analyst serial
 $Comp
 L Connector:Conn_01x05_Male J?
@@ -212,12 +196,12 @@ $EndComp
 $Comp
 L Connector:Conn_01x02_Male J?
 U 1 1 5D6DB076
-P 850 7050
-F 0 "J?" V 1004 6862 50  0001 R CNN
-F 1 "Conn_01x02_Male" V 958 6862 50  0001 R CNN
-F 2 "" H 850 7050 50  0001 C CNN
-F 3 "~" H 850 7050 50  0001 C CNN
-	1    850  7050
+P 850 6050
+F 0 "J?" V 1004 5862 50  0001 R CNN
+F 1 "Conn_01x02_Male" V 958 5862 50  0001 R CNN
+F 2 "" H 850 6050 50  0001 C CNN
+F 3 "~" H 850 6050 50  0001 C CNN
+	1    850  6050
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -235,17 +219,6 @@ Wire Wire Line
 	3250 7300 3250 6850
 Wire Wire Line
 	3350 7300 3350 6850
-$Comp
-L Connector:Conn_01x02_Female J?
-U 1 1 5D6F5A1C
-P 850 6850
-F 0 "J?" V 696 6662 50  0001 R CNN
-F 1 "Conn_01x02_Female" V 742 6662 50  0001 R CNN
-F 2 "" H 850 6850 50  0001 C CNN
-F 3 "~" H 850 6850 50  0001 C CNN
-	1    850  6850
-	0    -1   1    0   
-$EndComp
 $Comp
 L Connector:Conn_01x02_Female J?
 U 1 1 5D6F7ABC
@@ -342,13 +315,13 @@ Wire Notes Line
 Wire Notes Line
 	1700 7100 1700 6600
 Wire Notes Line
-	800  6600 1000 6600
+	800  5600 1000 5600
 Wire Notes Line
-	1000 6600 1000 7100
+	1000 5600 1000 6100
 Wire Notes Line
-	1000 7100 800  7100
+	1000 6100 800  6100
 Wire Notes Line
-	800  7100 800  6600
+	800  6100 800  5600
 Wire Notes Line
 	3200 6600 3200 7100
 Wire Notes Line
@@ -359,9 +332,7 @@ Wire Notes Line
 	3400 6600 3200 6600
 Wire Wire Line
 	2150 2750 2150 5900
-Wire Notes Line
-	6850 1800 7150 1800
-Text Notes 7750 4800 0    50   ~ 0
+Text Notes 7650 4800 0    50   ~ 0
 5V power
 $Comp
 L Merax_EBike_Parts:handlebar_complete U?
@@ -542,24 +513,9 @@ Wire Wire Line
 Wire Wire Line
 	1450 6850 1450 7300
 Wire Wire Line
-	950  2550 950  6150
-Wire Wire Line
-	850  2550 850  5550
-Connection ~ 850  5550
-Wire Wire Line
-	850  5550 850  6200
-Wire Wire Line
-	950  6850 950  7300
-Wire Wire Line
-	850  6850 850  7300
-Wire Wire Line
 	850  2250 850  2350
 Wire Wire Line
 	950  2250 950  2350
-Wire Wire Line
-	3250 6200 850  6200
-Wire Wire Line
-	3350 6150 950  6150
 Wire Notes Line
 	2700 6600 2400 6600
 Wire Notes Line
@@ -636,12 +592,6 @@ Wire Wire Line
 	2650 2250 2650 6350
 Wire Wire Line
 	2650 6350 2850 6350
-Connection ~ 850  6200
-Wire Wire Line
-	850  6200 850  6650
-Wire Wire Line
-	950  6150 950  6650
-Connection ~ 950  6150
 Wire Wire Line
 	1350 2550 1350 6650
 Wire Wire Line
@@ -766,10 +716,6 @@ F 3 "~" H 8450 2550 50  0001 C CNN
 	1    8450 2550
 	0    -1   -1   0   
 $EndComp
-Text Notes 8650 2300 1    50   ~ 0
-green
-Text Notes 8250 2300 1    50   ~ 0
-red
 Wire Wire Line
 	8050 2700 8050 2350
 Wire Wire Line
@@ -779,27 +725,8 @@ Wire Wire Line
 Wire Wire Line
 	1250 2550 1250 5600
 Connection ~ 1250 5600
-Wire Notes Line
-	6850 2100 6850 1800
-Wire Notes Line
-	7150 2100 6850 2100
-Wire Notes Line
-	7150 1800 7150 2100
-$Comp
-L Merax_EBike_Parts:Com_Cable J?
-U 1 1 5D14797C
-P 6900 1950
-F 0 "J?" V 6746 1802 50  0001 R CNN
-F 1 "Com_Cable" H 5700 2250 50  0001 R CNN
-F 2 "" H 6900 1950 50  0001 C CNN
-F 3 "~" H 6900 1950 50  0001 C CNN
-	1    6900 1950
-	-1   0    0    -1  
-$EndComp
 Wire Wire Line
-	7400 1600 7500 1600
-Wire Wire Line
-	7350 1500 7500 1500
+	7450 1600 7500 1600
 Wire Notes Line
 	6700 800  7200 800 
 $Comp
@@ -846,11 +773,9 @@ Wire Wire Line
 Wire Wire Line
 	6950 1350 7450 1350
 Wire Wire Line
-	6550 2550 6550 5550
+	6650 2550 6650 5550
 Wire Wire Line
-	850  5550 6550 5550
-Wire Wire Line
-	1250 5600 6600 5600
+	1250 5600 6700 5600
 Wire Wire Line
 	7400 2900 7700 2900
 Wire Wire Line
@@ -994,17 +919,9 @@ Wire Wire Line
 Wire Wire Line
 	9150 2900 9150 2350
 Wire Wire Line
-	6650 3050 6900 3050
+	6700 2800 6900 2800
 Wire Wire Line
-	6600 2800 6900 2800
-Wire Wire Line
-	6550 2550 6900 2550
-Wire Wire Line
-	7350 1500 7350 1850
-Wire Wire Line
-	7450 1700 7500 1700
-Wire Wire Line
-	6750 1950 6750 4100
+	6650 2550 6900 2550
 Wire Wire Line
 	6350 850  6750 850 
 Wire Wire Line
@@ -1012,23 +929,19 @@ Wire Wire Line
 Wire Wire Line
 	6450 1250 6750 1250
 Wire Wire Line
-	6650 3050 6650 5650
-Wire Wire Line
-	6600 2800 6600 5600
+	6700 2800 6700 5600
 Wire Wire Line
 	6350 850  6350 5200
-Wire Wire Line
-	6400 950  6400 5250
 $Comp
 L Device:Battery BT?
 U 1 1 5E567D54
-P 6100 3600
-F 0 "BT?" V 5855 3600 50  0001 C CNN
-F 1 "Battery" V 6200 3600 50  0001 C CNN
-F 2 "" V 6100 3660 50  0001 C CNN
-F 3 "~" V 6100 3660 50  0001 C CNN
-	1    6100 3600
-	1    0    0    -1  
+P 5350 2050
+F 0 "BT?" V 5105 2050 50  0001 C CNN
+F 1 "Battery" V 5450 2050 50  0001 C CNN
+F 2 "" V 5350 2110 50  0001 C CNN
+F 3 "~" V 5350 2110 50  0001 C CNN
+	1    5350 2050
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	4250 7300 4250 4600
@@ -1036,8 +949,6 @@ Wire Wire Line
 	3950 6850 3950 5650
 Wire Wire Line
 	3750 6850 3750 4950
-Wire Wire Line
-	3950 5650 6650 5650
 Connection ~ 3950 5650
 Wire Wire Line
 	3950 5650 3950 4850
@@ -1052,18 +963,6 @@ Wire Wire Line
 Connection ~ 4950 5300
 Wire Wire Line
 	4950 5300 4950 6650
-Wire Wire Line
-	7450 1700 7450 2050
-Wire Wire Line
-	7100 2050 7450 2050
-Wire Wire Line
-	7350 1850 7100 1850
-Wire Wire Line
-	7100 1950 7400 1950
-Wire Wire Line
-	7400 1950 7400 1600
-Wire Wire Line
-	6750 1950 6900 1950
 Wire Wire Line
 	3750 4950 2950 4950
 Wire Wire Line
@@ -1136,31 +1035,21 @@ $EndComp
 Wire Wire Line
 	6450 1250 6450 5300
 Wire Wire Line
-	10400 4100 10400 4850
-Wire Wire Line
-	10400 4850 10200 4850
-Wire Wire Line
 	10400 6550 10400 5550
 Wire Wire Line
 	10400 5550 10200 5550
 Wire Wire Line
-	2150 5900 6750 5900
+	2150 5900 6900 5900
 Wire Wire Line
-	6750 4100 10400 4100
+	6550 4100 10300 4100
 Wire Wire Line
 	4150 4200 4950 4200
 Wire Wire Line
-	6800 6100 8350 6100
+	6900 5900 6900 6550
 Wire Wire Line
-	6750 5900 6750 6550
-Wire Wire Line
-	6750 6550 10400 6550
-Wire Wire Line
-	6250 4800 8100 4800
+	6900 6550 10400 6550
 Wire Wire Line
 	5250 4600 5200 4600
-Wire Wire Line
-	6800 5050 6800 6100
 $Comp
 L Regulator_Switching:LM2596S-5 U?
 U 1 1 5E511D22
@@ -1176,54 +1065,207 @@ Wire Wire Line
 	5750 5000 5750 5050
 Connection ~ 5750 5050
 Wire Wire Line
-	5750 5050 6800 5050
+	4450 950  4350 950 
 Wire Wire Line
-	4400 3900 4400 3350
+	6200 850  6200 2050
 Wire Wire Line
-	4400 950  4350 950 
-Wire Wire Line
-	6250 850  6250 3350
-Wire Wire Line
-	6250 850  4350 850 
+	6200 850  4350 850 
 Wire Wire Line
 	5150 5050 5750 5050
+Wire Wire Line
+	5150 3900 5150 5050
+Wire Wire Line
+	5200 3900 6200 3900
+Wire Wire Line
+	5200 3900 5200 4600
+Wire Wire Line
+	3950 5650 6750 5650
+Wire Wire Line
+	6750 3050 6900 3050
+Wire Wire Line
+	6750 3050 6750 5650
+Wire Wire Line
+	6950 5050 6950 6100
+Wire Wire Line
+	5750 5050 6950 5050
+Wire Wire Line
+	6950 6100 8350 6100
+Wire Wire Line
+	4450 3900 5150 3900
 $Comp
 L Merax_EBike_Parts:GPS U?
 U 1 1 601FA0C7
-P 5150 3200
-F 0 "U?" H 5150 3200 50  0001 C CNN
-F 1 "GPS" H 5250 3200 50  0000 L CNN
-F 2 "" H 5150 3200 50  0001 C CNN
-F 3 "" H 5150 3200 50  0001 C CNN
-	1    5150 3200
+P 5000 3450
+F 0 "U?" H 5000 3450 50  0001 C CNN
+F 1 "GPS" V 5450 3000 50  0000 L CNN
+F 2 "" H 5000 3450 50  0001 C CNN
+F 3 "" H 5000 3450 50  0001 C CNN
+	1    5000 3450
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5550 2050 6200 2050
+Connection ~ 6200 2050
+Wire Wire Line
+	5150 2050 4450 2050
+Wire Wire Line
+	4450 950  4450 2050
+Connection ~ 4450 2050
+Wire Wire Line
+	4450 2050 4450 3900
+Wire Wire Line
+	6200 2050 6200 2650
+Wire Wire Line
+	5150 2650 6200 2650
+Connection ~ 6200 2650
+Wire Wire Line
+	6200 2650 6200 3900
+Wire Wire Line
+	5150 3900 5150 3800
+Connection ~ 5150 3900
+Wire Wire Line
+	5150 2650 5150 2750
+Wire Wire Line
+	3350 6150 1050 6150
+Wire Wire Line
+	850  5850 850  6050
+Wire Wire Line
+	900  6050 850  6050
+Connection ~ 850  6050
+Wire Wire Line
+	850  6050 850  7300
+$Comp
+L Connector:Conn_01x02_Female J?
+U 1 1 5D6F5A1C
+P 850 5850
+F 0 "J?" V 696 5662 50  0001 R CNN
+F 1 "Conn_01x02_Female" V 742 5662 50  0001 R CNN
+F 2 "" H 850 5850 50  0001 C CNN
+F 3 "~" H 850 5850 50  0001 C CNN
+	1    850  5850
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	950  2550 950  5650
+Wire Wire Line
+	10200 5750 10300 5750
+Wire Wire Line
+	10300 4100 10300 4950
+Wire Wire Line
+	10200 4950 10300 4950
+Connection ~ 10300 4950
+Wire Wire Line
+	10300 4950 10300 5750
+Wire Wire Line
+	8200 4800 8350 4800
+$Comp
+L Connector:XLR3_AudioJack2_Combo J?
+U 1 1 5D383FB0
+P 6800 1900
+F 0 "J?" H 6800 2173 50  0001 C CNN
+F 1 "XLR3_AudioJack2_Combo" H 6800 2174 50  0001 C CNN
+F 2 "" H 6800 2000 50  0001 C CNN
+F 3 " ~" H 6800 2000 50  0001 C CNN
+	1    6800 1900
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6400 950  6400 5250
+Wire Wire Line
+	7450 1700 7500 1700
+Wire Wire Line
+	6550 2250 6550 4100
+$Comp
+L Connector:AudioJack2_Ground J?
+U 1 1 5D2EE231
+P 7250 1650
+F 0 "J?" H 7282 1883 50  0001 C CNN
+F 1 "AudioJack2_Ground" H 7282 1884 50  0001 C CNN
+F 2 "" H 7250 1650 50  0001 C CNN
+F 3 "~" H 7250 1650 50  0001 C CNN
+	1    7250 1650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5850 3350 6100 3350
-Connection ~ 6250 3350
+	6800 1750 6850 1700
 Wire Wire Line
-	4800 3350 4400 3350
-Connection ~ 4400 3350
+	7300 1600 7300 1750
 Wire Wire Line
-	4400 3350 4400 950 
-Connection ~ 6100 3350
+	7300 1750 6900 1750
 Wire Wire Line
-	6100 3350 6250 3350
+	6900 1750 6800 1850
 Wire Wire Line
-	6100 3350 6100 3400
+	7200 1700 6850 1700
 Wire Wire Line
-	6100 3800 6100 3900
+	6800 1850 6800 2200
 Wire Wire Line
-	4400 3900 5150 3900
+	7200 1500 7200 1700
 Wire Wire Line
-	5150 3900 5150 5050
-Connection ~ 5150 3900
+	7500 1500 7450 1500
 Wire Wire Line
-	5150 3900 6100 3900
+	7200 1500 7450 1500
+Connection ~ 7450 1500
 Wire Wire Line
-	5200 3950 6250 3950
+	7300 1600 7450 1600
+Connection ~ 7450 1600
 Wire Wire Line
-	5200 3950 5200 4600
+	850  5550 850  5650
 Wire Wire Line
-	6250 3350 6250 3950
+	850  2550 850  5550
+Connection ~ 850  5550
+Wire Wire Line
+	850  5550 6650 5550
+Wire Wire Line
+	6250 4800 8000 4800
+Wire Wire Line
+	8200 4800 8200 4750
+Wire Wire Line
+	8200 4750 8150 4750
+Wire Wire Line
+	8150 4750 8150 4850
+Wire Wire Line
+	8150 4850 8100 4850
+Wire Wire Line
+	8100 4850 8100 4750
+Wire Wire Line
+	8100 4750 8050 4750
+Wire Wire Line
+	8050 4850 8000 4850
+Wire Wire Line
+	8000 4850 8000 4800
+Wire Wire Line
+	8050 4750 8050 4850
+Wire Wire Line
+	950  6050 950  7300
+Wire Wire Line
+	950  6050 950  5850
+Connection ~ 950  6050
+Wire Wire Line
+	1050 6150 1050 6050
+Wire Wire Line
+	950  6050 1050 6050
+Wire Wire Line
+	900  6200 900  6050
+Wire Wire Line
+	900  6200 3250 6200
+Wire Wire Line
+	6800 1750 6800 1600
+Wire Wire Line
+	6950 1900 7100 1900
+Wire Wire Line
+	7050 1950 6950 1900
+Wire Wire Line
+	7250 1900 7250 1950
+Wire Wire Line
+	7250 1950 7050 1950
+Wire Wire Line
+	7250 1950 7450 1950
+Connection ~ 7250 1950
+Wire Wire Line
+	7450 1700 7450 1950
+Wire Wire Line
+	6550 2250 6800 2250
+Wire Wire Line
+	6800 2250 6800 2200
+Connection ~ 6800 2200
 $EndSCHEMATC
