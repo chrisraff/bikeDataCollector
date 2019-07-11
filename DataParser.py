@@ -39,10 +39,10 @@ def real_round(n):
 
 
 # ####change this to parse new file#### #
-rawInputFile = "output_1560311576.64.txt"
-number_of_columns = 15
+rawInputFile = "output_1559680727.33.txt"
+number_of_columns = 16
 
-# set file names, open files, force read/write with ascii encoding, ignore errors
+# open file, force read/write with ascii encoding, ignore errors
 rawData = open(rawInputFile, "r", encoding="ascii", errors='ignore')
 
 # extract bike ID
@@ -80,11 +80,14 @@ cleanData.close()
 df = pd.read_csv(cleanOutputFile, sep="\t", header=0)
 df = df.fillna(0)  # replace NaN values with 0
 
+'''
 # delete unnecessary columns (values are always/nearly constant)
 for i in list(df):  # iterate over every column
     if is_int(df.at[0, i]):  # check if first value in column is an integer
         if df[i].std() < 1e-9:  # check if standard deviation of column is less than 1e-9
             df = df.drop(columns=i)  # delete column
+'''
+
 ''' cyclotron remaining columns:
     millis ampHours volts amps speed distance rpm throttleIn throttleOut brake'''
 
@@ -94,9 +97,8 @@ for i in ["ampHours", "volts", "amps", "throttleIn", "throttleOut"]:
 
 
 # adjust data for graphing purposes
-df = df.replace(to_replace={"rpm": {0: np.nan}})  # replace 0 in rpm with NaN for graphing purposes
 df = df.replace(to_replace={"brake": {"r": np.nan}})  # replace r in brake with NaN for graphing purposes
-df = df.replace(to_replace={"brake": {"rB": 45}})  # replace rB in brake with 1 for graphing purposes
+df = df.replace(to_replace={"brake": {"rB": 45}})  # replace rB in brake with 45 for graphing purposes
 
 # determine indices of new sessions
 new_data_indices = []  # initialize list of new session indices
@@ -127,6 +129,13 @@ for i in range(len(new_data_indices) - 1):
     sessions[i]["timeSinceStart"] = time_since_start[start:end]
     sessions[i]["sessionDistance"] = session_distance[start:end]
 
+for i in range(len(sessions)):
+    sessions[i] = sessions[i][sessions[i].rpm < 200]
+    sessions[i] = sessions[i][sessions[i].distance >= sessions[i]["distance"].values[0]]
+    sessions[i] = sessions[i][sessions[i].speed <= 40]
+    sessions[i] = sessions[i].replace(to_replace={"rpm": {0: np.nan}})
+# TODO: deviation 
+
 """# debug: use this to check sessions
 if len(sessions) == 1:
     print("There is 1 recorded session")
@@ -138,9 +147,12 @@ else:
 
 # TODO: create better plots for each session
 for i in range(len(sessions)):  # create graphs for each session
-    sessions[i].plot(x="timeSinceStart", y=["speed", "rpm", "brake", "sessionDistance"], kind="line", grid=True)
+    ax = sessions[i].plot(x="timeSinceStart", y=["speed", "sessionDistance", "rpm", "brake"], kind="line", grid=True, color=['g', 'b', 'y', 'r'])
+    ax.legend(["Speed (miles per hour)", "Distance (miles)", "RPM", "Brake Use"])
     plt.xlabel("Seconds after Start of Session")
     plt.title("Session %s/%s" % (i+1, len(sessions)))
     plt.xlim(left=0)
     plt.ylim(bottom=0)
 plt.show()
+
+print(sessions[0])

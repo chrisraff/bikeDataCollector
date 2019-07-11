@@ -1,0 +1,1 @@
+millis	ampHours	volts	amps	speed	distance	degreesC	rpm	humanWatts	nmRiderTorque	throttleIn	throttleOut	acceleration	flag1	brake	assist	light
